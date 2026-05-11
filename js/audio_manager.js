@@ -81,13 +81,15 @@ class AudioManager {
                 return;
             }
 
+            speechSynthesis.cancel();
+            this.isPlaying = true;
+
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'th-TH';
-            utterance.rate = 0.7;
+            utterance.rate = 0.6;
             utterance.pitch = 1.0;
             utterance.volume = 1.0;
 
-            this.isPlaying = true;
             this.currentUtterance = utterance;
 
             const voices = speechSynthesis.getVoices();
@@ -96,27 +98,37 @@ class AudioManager {
                 utterance.voice = thaiVoice;
             }
 
+            let resolved = false;
+
+            const finish = () => {
+                if (!resolved) {
+                    resolved = true;
+                    this.isPlaying = false;
+                    this.currentUtterance = null;
+                    resolve();
+                }
+            };
+
             utterance.onstart = () => {
                 this.isPlaying = true;
             };
 
             utterance.onend = () => {
-                this.isPlaying = false;
-                this.currentUtterance = null;
-                resolve();
+                finish();
             };
 
             utterance.onerror = (event) => {
                 console.error('Speech synthesis error:', event);
-                this.isPlaying = false;
-                this.currentUtterance = null;
-                resolve();
+                finish();
             };
 
-            speechSynthesis.cancel();
             setTimeout(() => {
                 speechSynthesis.speak(utterance);
-            }, 50);
+            }, 100);
+
+            setTimeout(() => {
+                finish();
+            }, 10000);
         });
     }
 

@@ -506,11 +506,15 @@ body {
 .option-card {
     background: white;
     border-radius: 25px;
-    padding: 20px;
+    padding: 40px 20px;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     border: 4px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
 }
 
 .option-card:hover {
@@ -530,6 +534,13 @@ body {
     animation: shake 0.4s ease;
 }
 
+.option-character {
+    font-family: 'Itim', cursive;
+    font-size: 6rem;
+    line-height: 1;
+    color: #2D3748;
+}
+
 @keyframes correctBounce {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.1); }
@@ -539,13 +550,6 @@ body {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-10px); }
     75% { transform: translateX(10px); }
-}
-
-.option-img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 15px;
 }
 
 .result-content {
@@ -661,6 +665,26 @@ body {
     }
     100% {
         transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+.star-particle {
+    position: absolute;
+    top: -20px;
+    animation: starFall 2s ease-out forwards;
+}
+
+@keyframes starFall {
+    0% {
+        transform: translateY(0) scale(0) rotate(0deg);
+        opacity: 1;
+    }
+    20% {
+        transform: translateY(20vh) scale(1.2) rotate(90deg);
+    }
+    100% {
+        transform: translateY(100vh) scale(0.8) rotate(720deg);
         opacity: 0;
     }
 }

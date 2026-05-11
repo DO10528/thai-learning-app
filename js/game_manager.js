@@ -177,12 +177,15 @@ class GameManager {
             card.className = 'option-card';
             card.dataset.index = index;
 
-            const img = document.createElement('img');
-            img.src = option.illustration;
-            img.alt = option.name || option.group;
-            img.className = 'option-img';
+            const character = document.createElement('div');
+            character.className = 'option-character';
+            if (option.character) {
+                character.textContent = option.character;
+            } else if (option.group) {
+                character.textContent = option.group;
+            }
 
-            card.appendChild(img);
+            card.appendChild(character);
 
             card.addEventListener('click', () => {
                 this.handleAnswer(option);
@@ -220,6 +223,27 @@ class GameManager {
         cards.forEach(card => {
             card.classList.add('correct');
         });
+
+        this.createStars();
+    }
+
+    createStars() {
+        const container = document.getElementById('confetti-container');
+        if (!container) return;
+
+        for (let i = 0; i < 10; i++) {
+            const star = document.createElement('div');
+            star.className = 'star-particle';
+            star.textContent = '⭐';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 0.5 + 's';
+            star.style.fontSize = (2 + Math.random() * 2) + 'rem';
+            container.appendChild(star);
+
+            setTimeout(() => {
+                star.remove();
+            }, 2000);
+        }
     }
 
     showWrongFeedback() {
