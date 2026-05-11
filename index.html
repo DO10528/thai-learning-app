@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เรียนภาษาไทย</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <header class="app-header">
+            <h1 class="app-title">เรียนภาษาไทยกันเถอะ!</h1>
+        </header>
+        
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="consonants">
+                <span class="tab-icon">ก</span>
+                <span class="tab-name">พยัญชนะไทย</span>
+            </button>
+            <button class="tab-btn" data-tab="vowels">
+                <span class="tab-icon">า</span>
+                <span class="tab-name">สระ</span>
+            </button>
+            <button class="tab-btn" data-tab="finals">
+                <span class="tab-icon">กก</span>
+                <span class="tab-name">ตัวสะกด</span>
+            </button>
+        </nav>
+        
+        <button class="nav-game-btn" onclick="window.location.href='thai_game.html'">🎮 เล่นเกมจับคู่ภาพ</button>
+        
+        <main class="main-content">
+            <div id="consonants-tab" class="tab-content active">
+                <h2 class="section-title">พยัญชนะไทย (44 ตัว)</h2>
+                <div id="consonants-grid" class="character-grid"></div>
+            </div>
+            
+            <div id="vowels-tab" class="tab-content">
+                <h2 class="section-title">สระไทย</h2>
+                <div id="vowels-grid" class="character-grid"></div>
+            </div>
+            
+            <div id="finals-tab" class="tab-content">
+                <h2 class="section-title">ตัวสะกด</h2>
+                <div id="finals-grid" class="finals-grid"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/thai_data.js"></script>
+    <script src="js/audio_manager.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
