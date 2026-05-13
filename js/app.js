@@ -60,7 +60,12 @@ function createCharacterCard(data, index) {
     
     const character = document.createElement('div');
     character.className = 'character';
-    character.textContent = data.character;
+    
+    let displayChar = data.character;
+    if (displayChar.includes('-')) {
+        displayChar = displayChar.replace('-', 'ก');
+    }
+    character.textContent = displayChar;
     
     const name = document.createElement('div');
     name.className = 'character-name';
