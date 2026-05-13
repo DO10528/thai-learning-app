@@ -75,6 +75,8 @@ class AudioManager {
                 return;
             }
 
+            speechSynthesis.cancel();
+
             let text = '';
             if (data.name) {
                 text = data.name;
@@ -92,15 +94,20 @@ class AudioManager {
                 return;
             }
 
-            text = text.replace(/^สระ\s*/, '');
+            text = text.replace(/สระ/g, '').trim();
 
-            speechSynthesis.cancel();
             this.isPlaying = true;
 
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'th-TH';
-            utterance.rate = 0.7;
-            utterance.pitch = 1.2;
+            
+            if (text === 'เออะ' || text === 'เอียะ') {
+                utterance.rate = 1.1;
+                utterance.pitch = 1.2;
+            } else {
+                utterance.rate = 0.7;
+                utterance.pitch = 1.2;
+            }
             utterance.volume = 1.0;
 
             this.currentUtterance = utterance;
