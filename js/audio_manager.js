@@ -92,21 +92,40 @@ class AudioManager {
                 return;
             }
 
+            text = text.replace(/^สระ\s*/, '');
+
             speechSynthesis.cancel();
             this.isPlaying = true;
 
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'th-TH';
-            utterance.rate = 0.6;
-            utterance.pitch = 1.0;
+            utterance.rate = 0.7;
+            utterance.pitch = 1.15;
             utterance.volume = 1.0;
 
             this.currentUtterance = utterance;
 
-            const voices = speechSynthesis.getVoices();
-            const thaiVoice = voices.find(voice => voice.lang === 'th-TH');
-            if (thaiVoice) {
-                utterance.voice = thaiVoice;
+            const thaiVoices = this.voices.filter(voice => 
+                voice.lang === 'th-TH' || voice.lang.startsWith('th')
+            );
+
+            let selectedVoice = null;
+            for (const voice of thaiVoices) {
+                const voiceName = voice.name.toLowerCase();
+                if (voiceName.includes('female') || voiceName.includes('woman') || 
+                    voiceName.includes('หญิง') || voiceName.includes('siri') || 
+                    voiceName.includes('google')) {
+                    selectedVoice = voice;
+                    break;
+                }
+            }
+
+            if (!selectedVoice && thaiVoices.length > 0) {
+                selectedVoice = thaiVoices[0];
+            }
+
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
             }
 
             let resolved = false;
@@ -133,9 +152,7 @@ class AudioManager {
                 finish();
             };
 
-            setTimeout(() => {
-                speechSynthesis.speak(utterance);
-            }, 100);
+            speechSynthesis.speak(utterance);
 
             setTimeout(() => {
                 finish();
