@@ -5,6 +5,17 @@ class AudioManager {
         this.isPlaying = false;
         this.currentUtterance = null;
         this.audioContext = null;
+        this.voices = [];
+        this.loadVoices();
+    }
+
+    loadVoices() {
+        if ('speechSynthesis' in window) {
+            this.voices = speechSynthesis.getVoices();
+            speechSynthesis.onvoiceschanged = () => {
+                this.voices = speechSynthesis.getVoices();
+            };
+        }
     }
 
     async playSound(data) {
