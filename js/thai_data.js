@@ -63,7 +63,7 @@ const thaiAlphabet = {
         { character: 'โ-', name: 'โอ', audio: '', illustration: '' },
         { character: 'เ-าะ', name: 'เอาะ', audio: '', illustration: '' },
         { character: '-อ', name: 'ออ', audio: '', illustration: '' },
-        { character: 'เ-อะ', name: 'เออะ', audio: '', illustration: '' },
+        { character: 'เอะ', name: 'เออะ', audio: '', illustration: '' },
         { character: 'เ-อ', name: 'เออ', audio: '', illustration: '' },
         { character: 'เ-ียะ', name: 'เอียะ', audio: '', illustration: '' },
         { character: 'เอีย', name: 'เอีย', audio: '', illustration: '' },
