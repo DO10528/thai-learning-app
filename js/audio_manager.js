@@ -102,7 +102,7 @@ class AudioManager {
             utterance.lang = 'th-TH';
             
             if (text === 'เออะ' || text === 'เอียะ') {
-                utterance.rate = 1.1;
+                utterance.rate = 1.4;
                 utterance.pitch = 1.2;
             } else {
                 utterance.rate = 0.7;
