@@ -63,7 +63,7 @@ function createCharacterCard(data, index) {
     
     let displayChar = data.character;
     if (displayChar.includes('-')) {
-        displayChar = displayChar.replace('-', 'ก');
+        displayChar = displayChar.replace('-', 'อ');
     }
     character.textContent = displayChar;
     
