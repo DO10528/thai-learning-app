@@ -100,7 +100,7 @@ class AudioManager {
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'th-TH';
             utterance.rate = 0.7;
-            utterance.pitch = 1.15;
+            utterance.pitch = 1.2;
             utterance.volume = 1.0;
 
             this.currentUtterance = utterance;
