@@ -140,6 +140,11 @@ body {
     background: linear-gradient(135deg, #FCE4EC 0%, #F8BBD9 100%);
 }
 
+.writing-card {
+    border-color: var(--thai-blue);
+    background: linear-gradient(135deg, #EBF8FF 0%, #BEE3F8 100%);
+}
+
 .menu-icon {
     font-size: 5rem;
     margin-bottom: 20px;

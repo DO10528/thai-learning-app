@@ -11,7 +11,7 @@ class WritingGame {
         this.lastX = 0;
         this.lastY = 0;
         this.currentColor = '#000000';
-        this.lineWidth = 8;
+        this.lineWidth = 15;
         this.drawingCanvas = null;
         this.drawingCtx = null;
         this.guideCanvas = null;
@@ -275,34 +275,81 @@ class WritingGame {
     calculateAccuracy() {
         if (!this.drawingCanvas) return 0;
 
-        const imageData = this.drawingCtx.getImageData(0, 0, this.drawingCanvas.width, this.drawingCanvas.height);
-        const data = imageData.data;
-        let nonWhitePixels = 0;
-        const totalPixels = this.drawingCanvas.width * this.drawingCanvas.height;
+        const size = this.drawingCanvas.width;
+        
+        // Create offscreen canvas for comparison
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = size;
+        offCanvas.height = size;
+        const offCtx = offCanvas.getContext('2d', { willReadFrequently: true });
+        
+        const fontSize = size * 0.6;
+        offCtx.font = `${fontSize}px 'Itim', cursive`;
+        offCtx.textAlign = 'center';
+        offCtx.textBaseline = 'middle';
+        
+        let displayChar = this.currentQuestion.character;
+        if (displayChar && displayChar.includes('-')) {
+            displayChar = displayChar.replace('-', 'อ');
+        }
 
-        for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
-            const a = data[i + 3];
-
-            if (a > 0 && !(r === 255 && g === 255 && b === 255)) {
-                nonWhitePixels++;
+        // --- Calculate "Precision" (how much of drawing is within tolerance) ---
+        offCtx.clearRect(0, 0, size, size);
+        offCtx.fillStyle = '#000000';
+        offCtx.strokeStyle = '#000000';
+        offCtx.lineWidth = 40; // Wide tolerance
+        offCtx.lineJoin = 'round';
+        offCtx.strokeText(displayChar, size / 2, size / 2);
+        offCtx.fillText(displayChar, size / 2, size / 2);
+        
+        const toleranceData = offCtx.getImageData(0, 0, size, size).data;
+        const drawnData = this.drawingCtx.getImageData(0, 0, size, size).data;
+        
+        let drawnPixels = 0;
+        let insideTolerancePixels = 0;
+        
+        for (let i = 0; i < drawnData.length; i += 4) {
+            if (drawnData[i + 3] > 0) { // Check if user drew here (alpha > 0)
+                drawnPixels++;
+                if (toleranceData[i + 3] > 0) {
+                    insideTolerancePixels++;
+                }
             }
         }
-
-        const pixelRatio = (nonWhitePixels / totalPixels) * 100;
         
-        let accuracy;
-        if (pixelRatio > 0.5 && pixelRatio < 30) {
-            accuracy = 70 + Math.random() * 30;
-        } else if (pixelRatio > 0) {
-            accuracy = 50 + Math.random() * 40;
-        } else {
-            accuracy = 0;
-        }
+        if (drawnPixels === 0) return 0; // Did not draw anything
+        
+        const precision = insideTolerancePixels / drawnPixels;
 
-        return Math.round(accuracy);
+        // --- Calculate "Coverage" (how much of core text is covered) ---
+        offCtx.clearRect(0, 0, size, size);
+        offCtx.lineWidth = 1;
+        offCtx.fillText(displayChar, size / 2, size / 2);
+        
+        const coreData = offCtx.getImageData(0, 0, size, size).data;
+        
+        let corePixels = 0;
+        let coveredCorePixels = 0;
+        
+        for (let i = 0; i < drawnData.length; i += 4) {
+            if (coreData[i + 3] > 0) {
+                corePixels++;
+                if (drawnData[i + 3] > 0) {
+                    coveredCorePixels++;
+                }
+            }
+        }
+        
+        const coverage = corePixels > 0 ? (coveredCorePixels / corePixels) : 0;
+        
+        // Final accuracy score (weighted average: coverage 60%, precision 40%)
+        const accuracy = (coverage * 0.6 + precision * 0.4) * 100;
+        
+        // Adjust score to be slightly forgiving for kids
+        let adjustedAccuracy = accuracy * 1.2; 
+        if (adjustedAccuracy > 100) adjustedAccuracy = 100;
+        
+        return Math.round(adjustedAccuracy);
     }
 
     showFeedback(message, type) {
