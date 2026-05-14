@@ -103,14 +103,14 @@ body {
 
 .character-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 15px;
     padding: 10px;
 }
 
 .finals-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 20px;
     padding: 10px;
 }
@@ -118,12 +118,17 @@ body {
 .character-card {
     background: white;
     border-radius: 20px;
-    padding: 20px 10px;
-    text-align: center;
+    padding: 15px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1.1;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border: 4px solid transparent;
+    overflow: hidden;
 }
 
 .character-card:active {
@@ -149,15 +154,18 @@ body {
 
 .character {
     font-family: 'Itim', cursive;
-    font-size: 4rem;
-    line-height: 1;
-    margin-bottom: 8px;
+    font-size: clamp(2rem, 8vw, 4rem);
+    line-height: 1.3;
+    margin-bottom: 5px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .character-name {
-    font-size: 0.95rem;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
     color: #4A5568;
     font-weight: 600;
+    line-height: 1.2;
 }
 
 .final-card {
@@ -207,26 +215,18 @@ body {
 
 @media (min-width: 768px) {
     .character-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
         gap: 20px;
     }
     
-    .character {
-        font-size: 4.5rem;
-    }
-    
     .character-card {
-        padding: 25px 15px;
+        padding: 20px 15px;
     }
 }
 
 @media (min-width: 1024px) {
     .character-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    }
-    
-    .character {
-        font-size: 5rem;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     }
     
     .app-title {
@@ -252,16 +252,12 @@ body {
     }
     
     .character-grid {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
         gap: 12px;
     }
     
-    .character {
-        font-size: 3.2rem;
-    }
-    
     .finals-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
 }
 
