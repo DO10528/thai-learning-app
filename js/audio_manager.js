@@ -4,17 +4,19 @@ class AudioManager {
         this.audioCache = new Map();
         this.isPlaying = false;
         this.currentUtterance = null;
-        this.audioContext = null;
         this.voices = [];
         this.loadVoices();
     }
 
     loadVoices() {
         if ('speechSynthesis' in window) {
-            this.voices = speechSynthesis.getVoices();
-            speechSynthesis.onvoiceschanged = () => {
+            const updateVoices = () => {
                 this.voices = speechSynthesis.getVoices();
             };
+            updateVoices();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = updateVoices;
+            }
         }
     }
 
@@ -24,13 +26,17 @@ class AudioManager {
                 this.stop();
             }
 
+            // 1. 自作音声ファイル(audio)がある場合は最優先で再生
             if (data.audio && data.audio.trim() !== '') {
                 await this.playFromFile(data.audio);
-            } else {
+            } 
+            // 2. ファイルがない場合はAI音声(WebSpeech)で再生
+            else {
                 await this.playWithWebSpeech(data);
             }
         } catch (error) {
             console.error('Audio playback error:', error);
+            // エラー時はバックアップとしてAI音声
             await this.playWithWebSpeech(data);
         }
     }
@@ -46,19 +52,16 @@ class AudioManager {
             }
 
             this.isPlaying = true;
-
             this.currentAudio.onended = () => {
                 this.isPlaying = false;
                 this.currentAudio = null;
                 resolve();
             };
-
             this.currentAudio.onerror = (error) => {
                 this.isPlaying = false;
                 this.currentAudio = null;
                 reject(error);
             };
-
             this.currentAudio.play().catch((err) => {
                 this.isPlaying = false;
                 this.currentAudio = null;
@@ -75,95 +78,84 @@ class AudioManager {
                 return;
             }
 
+            // 前の音声をキャンセル
             speechSynthesis.cancel();
 
-            let text = '';
-            if (data.name) {
-                text = data.name;
-            } else if (data.group && data.example) {
-                text = data.group + ' ' + data.example;
-            } else if (data.character) {
-                text = data.character;
-            } else if (data.question) {
-                text = data.question;
-            }
+            let rawText = '';
+            if (data.name) rawText = data.name;
+            else if (data.group && data.example) rawText = data.group + ' ' + data.example;
+            else if (data.character) rawText = data.character;
+            else if (data.question) rawText = data.question;
 
-            if (!text) {
+            if (!rawText) {
                 this.isPlaying = false;
                 resolve();
                 return;
             }
 
-            text = text.replace(/สระ/g, '').trim();
+            // 【重要】「สระ(サラ)」を完全に削除
+            let cleanText = rawText.replace(/สระ/g, '').trim();
 
             this.isPlaying = true;
 
-            const utterance = new SpeechSynthesisUtterance(text);
+            const utterance = new SpeechSynthesisUtterance(cleanText);
             utterance.lang = 'th-TH';
+
+            // --- 【個別発音調整プロトコル】 ---
             
-            if (text === 'เออะ' || text === 'เอียะ') {
-                utterance.rate = 1.4;
+            if (cleanText === 'เอียะ') {
+                // イアッ(Ia)専用：ゆっくり、はっきりと
+                utterance.rate = 0.75; 
+                utterance.pitch = 1.1; 
+            } else if (['อิ', 'อุ', 'อะ', 'เอะ', 'แอะ', 'โอะ', 'เอาะ'].includes(cleanText)) {
+                // その他の短母音：速く、キレよく（エッはファイル優先なのでここには来ません）
+                utterance.rate = 1.6;
+                utterance.pitch = 1.3;
+            } else if (cleanText === 'ถูกต้อง!' || cleanText === 'ลองอีกครั้ง!') {
+                utterance.rate = 1.0;
                 utterance.pitch = 1.2;
             } else {
-                utterance.rate = 0.7;
+                // 標準（長母音や子音）
+                utterance.rate = 0.8;
                 utterance.pitch = 1.2;
             }
+            
+            // --------------------------------
+
             utterance.volume = 1.0;
 
-            this.currentUtterance = utterance;
-
+            // 女性ボイスの優先選択
             const thaiVoices = this.voices.filter(voice => 
                 voice.lang === 'th-TH' || voice.lang.startsWith('th')
             );
-
             let selectedVoice = null;
-            for (const voice of thaiVoices) {
-                const voiceName = voice.name.toLowerCase();
-                if (voiceName.includes('female') || voiceName.includes('woman') || 
-                    voiceName.includes('หญิง') || voiceName.includes('siri') || 
-                    voiceName.includes('google')) {
-                    selectedVoice = voice;
-                    break;
-                }
+            const preferredKeywords = ['google', 'siri', 'female', 'woman', 'หญิง'];
+            for (const kw of preferredKeywords) {
+                selectedVoice = thaiVoices.find(v => v.name.toLowerCase().includes(kw));
+                if (selectedVoice) break;
             }
-
-            if (!selectedVoice && thaiVoices.length > 0) {
-                selectedVoice = thaiVoices[0];
-            }
-
-            if (selectedVoice) {
-                utterance.voice = selectedVoice;
-            }
-
-            let resolved = false;
-
-            const finish = () => {
-                if (!resolved) {
-                    resolved = true;
-                    this.isPlaying = false;
-                    this.currentUtterance = null;
-                    resolve();
-                }
-            };
-
-            utterance.onstart = () => {
-                this.isPlaying = true;
-            };
+            if (selectedVoice) utterance.voice = selectedVoice;
 
             utterance.onend = () => {
-                finish();
+                this.isPlaying = false;
+                resolve();
             };
 
             utterance.onerror = (event) => {
                 console.error('Speech synthesis error:', event);
-                finish();
+                this.isPlaying = false;
+                resolve();
             };
 
             speechSynthesis.speak(utterance);
 
+            // セーフティタイマー
             setTimeout(() => {
-                finish();
-            }, 10000);
+                if (this.isPlaying) {
+                    this.isPlaying = false;
+                    resolve();
+                }
+            }, 5000);
         });
     }
 
@@ -184,7 +176,6 @@ class AudioManager {
         if ('speechSynthesis' in window) {
             speechSynthesis.cancel();
         }
-        this.currentUtterance = null;
         this.isPlaying = false;
     }
 }
