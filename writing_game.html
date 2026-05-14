@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกมฝึกเขียนตัวอักษรไทย</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="writing-app">
+        <header class="game-header">
+            <button class="home-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-home"></i>
+            </button>
+            <h1 class="game-title">เกมฝึกเขียนตัวอักษรไทย</h1>
+            <div class="score-display">
+                <span class="score-label">คะแนน:</span>
+                <span class="score-value" id="score">0</span>
+            </div>
+        </header>
+
+        <div id="start-screen" class="screen active">
+            <div class="start-content">
+                <h2 class="welcome-text">มาฝึกเขียนตัวอักษร!</h2>
+                <p class="instruction-text">เลือกระดับและหมวดหมู่ที่ต้องการฝึกกันเถอะ!</p>
+                
+                <div class="level-buttons">
+                    <button class="level-btn" data-level="1">
+                        <span class="level-number">ระดับ 1</span>
+                        <span class="level-desc">เขียนตาม</span>
+                    </button>
+                    <button class="level-btn" data-level="2">
+                        <span class="level-number">ระดับ 2</span>
+                        <span class="level-desc">เขียนเอง</span>
+                    </button>
+                </div>
+
+                <div class="category-buttons">
+                    <button class="category-btn active" data-category="consonants">พยัญชนะ</button>
+                    <button class="category-btn" data-category="vowels">สระ</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+                <span class="progress-text" id="progress-text">1 / 10</span>
+            </div>
+
+            <div class="writing-area">
+                <div class="model-character-container">
+                    <div class="model-label">ตัวอย่าง:</div>
+                    <div class="model-character" id="model-character">ก</div>
+                </div>
+
+                <div class="canvas-container">
+                    <canvas id="drawing-canvas"></canvas>
+                    <canvas id="guide-canvas" class="guide-canvas"></canvas>
+                </div>
+
+                <div class="toolbar">
+                    <div class="color-palette">
+                        <button class="color-btn active" data-color="#000000" style="background: #000000;"></button>
+                        <button class="color-btn" data-color="#FF0000" style="background: #FF0000;"></button>
+                        <button class="color-btn" data-color="#0000FF" style="background: #0000FF;"></button>
+                        <button class="color-btn" data-color="#FFC0CB" style="background: #FFC0CB;"></button>
+                        <button class="color-btn" data-color="#008000" style="background: #008000;"></button>
+                    </div>
+                    <button class="eraser-btn" id="eraser-btn">
+                        <i class="fas fa-eraser"></i>
+                        <span>ล้าง</span>
+                    </button>
+                    <button class="check-btn" id="check-btn">
+                        <i class="fas fa-check"></i>
+                        <span>ตรวจสอบ</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="feedback-message" id="feedback-message"></div>
+        </div>
+
+        <div id="result-screen" class="screen">
+            <div class="result-content">
+                <h2 class="result-title">เสร็จสิ้น!</h2>
+                <div class="final-score">
+                    <span class="final-score-label">คะแนนรวม:</span>
+                    <span class="final-score-value" id="final-score">0</span>
+                </div>
+                <div class="result-stars" id="result-stars"></div>
+                <div class="result-buttons">
+                    <button class="result-btn" id="play-again-btn">เล่นอีกครั้ง</button>
+                    <button class="result-btn" id="back-to-menu-btn">กลับเมนู</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="confetti-container"></div>
+    </div>
+
+    <script src="js/thai_data.js"></script>
+    <script src="js/audio_manager.js"></script>
+    <script src="js/writing_game.js"></script>
+</body>
+</html>

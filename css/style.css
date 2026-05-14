@@ -1011,3 +1011,142 @@ body {
 #current-score-display .score-value {
     font-size: 3rem;
 }
+
+.writing-area {
+    text-align: center;
+    padding: 20px;
+}
+
+.model-character-container {
+    margin-bottom: 20px;
+}
+
+.model-label {
+    font-size: 1.5rem;
+    color: #4A5568;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.model-character {
+    font-family: 'Itim', cursive;
+    font-size: 6rem;
+    color: var(--thai-purple);
+    line-height: 1;
+}
+
+.canvas-container {
+    position: relative;
+    display: inline-block;
+    margin: 20px auto;
+    border: 5px solid var(--thai-purple);
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+#drawing-canvas {
+    display: block;
+    cursor: crosshair;
+}
+
+.guide-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.toolbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.color-palette {
+    display: flex;
+    gap: 10px;
+}
+
+.color-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 4px solid #E2E8F0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.color-btn:hover {
+    transform: scale(1.1);
+}
+
+.color-btn.active {
+    border-color: var(--thai-purple);
+    transform: scale(1.2);
+}
+
+.eraser-btn, .check-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 15px 25px;
+    background: white;
+    border: 3px solid var(--thai-blue);
+    border-radius: 15px;
+    font-family: 'Mali', cursive;
+    font-size: 1rem;
+    color: var(--thai-blue);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.eraser-btn:hover, .check-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.eraser-btn i, .check-btn i {
+    font-size: 1.8rem;
+}
+
+.check-btn {
+    border-color: var(--thai-green);
+    color: var(--thai-green);
+}
+
+.check-btn:hover {
+    background: linear-gradient(135deg, var(--thai-green), var(--thai-blue));
+    color: white;
+    border-color: transparent;
+}
+
+@media (max-width: 768px) {
+    .model-character {
+        font-size: 4rem;
+    }
+    
+    .canvas-container {
+        max-width: 90vw;
+    }
+    
+    .toolbar {
+        gap: 15px;
+    }
+    
+    .color-btn {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .eraser-btn, .check-btn {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+}
+
