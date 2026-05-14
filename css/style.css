@@ -30,6 +30,166 @@ body {
 .app-header {
     text-align: center;
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.home-btn {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 12px 20px;
+    background: white;
+    border: 3px solid var(--thai-purple);
+    border-radius: 15px;
+    font-size: 1.5rem;
+    color: var(--thai-purple);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.home-btn:hover {
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.menu-screen {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.menu-screen.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 40px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.menu-card {
+    background: white;
+    border-radius: 30px;
+    padding: 40px 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    border: 5px solid transparent;
+    aspect-ratio: 1 / 1.1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+}
+
+.menu-card:active {
+    transform: scale(0.98);
+}
+
+.table-card {
+    border-color: var(--thai-green);
+    background: linear-gradient(135deg, #E8F5E9 0%, #C8F7C5 100%);
+}
+
+.game-card {
+    border-color: var(--thai-orange);
+    background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+}
+
+.consonant-card {
+    border-color: var(--thai-red);
+    background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+}
+
+.vowel-card {
+    border-color: var(--thai-purple);
+    background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+}
+
+.final-card {
+    border-color: var(--thai-blue);
+    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+}
+
+.match-card {
+    border-color: var(--thai-yellow);
+    background: linear-gradient(135deg, #FFFDE7 0%, #FFF9C4 100%);
+}
+
+.pronunciation-card {
+    border-color: var(--thai-pink);
+    background: linear-gradient(135deg, #FCE4EC 0%, #F8BBD9 100%);
+}
+
+.menu-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    color: #2D3748;
+}
+
+.menu-char {
+    font-family: 'Itim', cursive;
+    font-size: 5rem;
+}
+
+.menu-title {
+    font-family: 'Mali', cursive;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2D3748;
+    margin-bottom: 8px;
+}
+
+.menu-subtitle {
+    font-size: 1.2rem;
+    color: #718096;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .menu-grid {
+        grid-template-columns: 1fr;
+        padding: 20px 15px;
+    }
+    
+    .menu-card {
+        padding: 30px 20px;
+    }
+    
+    .menu-icon {
+        font-size: 4rem;
+    }
+    
+    .menu-char {
+        font-size: 4rem;
+    }
+    
+    .menu-title {
+        font-size: 1.6rem;
+    }
+    
+    .menu-subtitle {
+        font-size: 1rem;
+    }
 }
 
 .app-title {
@@ -269,11 +429,19 @@ body {
 
 .game-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 30px;
     flex-wrap: wrap;
     gap: 15px;
+    position: relative;
+}
+
+.game-header .home-btn {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .back-btn {

@@ -1,9 +1,88 @@
 document.addEventListener('DOMContentLoaded', () => {
+    initNavigation();
     initTabs();
     renderConsonants();
     renderVowels();
     renderFinals();
 });
+
+function initNavigation() {
+    const homeBtn = document.getElementById('home-btn');
+    if (homeBtn) {
+        homeBtn.addEventListener('click', goToMainMenu);
+    }
+
+    const menuCards = document.querySelectorAll('.menu-card');
+    menuCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const screen = card.dataset.screen;
+            const action = card.dataset.action;
+            const link = card.dataset.link;
+
+            if (link) {
+                window.location.href = link;
+            } else if (action) {
+                showTableView(action);
+            } else if (screen) {
+                showScreen(screen);
+            }
+        });
+    });
+}
+
+function showScreen(screenId) {
+    document.querySelectorAll('.menu-screen').forEach(screen => {
+        screen.classList.remove('active');
+    });
+
+    const targetScreen = document.getElementById(`${screenId}-screen`);
+    if (targetScreen) {
+        targetScreen.classList.add('active');
+    }
+
+    const homeBtn = document.getElementById('home-btn');
+    const appTitle = document.getElementById('app-title');
+
+    if (screenId === 'main-menu') {
+        if (homeBtn) homeBtn.style.display = 'none';
+        if (appTitle) appTitle.textContent = 'เรียนภาษาไทยกันเถอะ!';
+    } else {
+        if (homeBtn) homeBtn.style.display = 'block';
+        if (screenId === 'table-menu') {
+            if (appTitle) appTitle.textContent = 'ดูตาราง';
+        } else if (screenId === 'game-menu') {
+            if (appTitle) appTitle.textContent = 'เล่นเกม';
+        } else if (screenId === 'table-view') {
+            if (appTitle) appTitle.textContent = 'ตารางตัวอักษร';
+        }
+    }
+}
+
+function goToMainMenu() {
+    showScreen('main-menu');
+}
+
+function showTableView(tab) {
+    showScreen('table-view');
+
+    const tabNav = document.getElementById('tab-nav');
+    if (tabNav) {
+        tabNav.style.display = 'flex';
+    }
+
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.tab === tab) {
+            btn.classList.add('active');
+        }
+    });
+
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.getElementById(`${tab}-tab`).classList.add('active');
+}
 
 function initTabs() {
     const tabBtns = document.querySelectorAll('.tab-btn');

@@ -7,46 +7,113 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div id="app">
         <header class="app-header">
-            <h1 class="app-title">เรียนภาษาไทยกันเถอะ!</h1>
+            <button class="home-btn" id="home-btn" style="display: none;">
+                <i class="fas fa-home"></i>
+            </button>
+            <h1 class="app-title" id="app-title">เรียนภาษาไทยกันเถอะ!</h1>
         </header>
-        
-        <nav class="tab-nav">
-            <button class="tab-btn active" data-tab="consonants">
-                <span class="tab-icon">ก</span>
-                <span class="tab-name">พยัญชนะไทย</span>
-            </button>
-            <button class="tab-btn" data-tab="vowels">
-                <span class="tab-icon">า</span>
-                <span class="tab-name">สระ</span>
-            </button>
-            <button class="tab-btn" data-tab="finals">
-                <span class="tab-icon">กก</span>
-                <span class="tab-name">ตัวสะกด</span>
-            </button>
-        </nav>
-        
-        <button class="nav-game-btn" onclick="window.location.href='thai_game.html'">🎮 เล่นเกมจับคู่ภาพ</button>
-        <button class="nav-pronunciation-btn" onclick="window.location.href='pronunciation.html'">🎤 ฝึกอ่านออกเสียง</button>
-        
+
         <main class="main-content">
-            <div id="consonants-tab" class="tab-content active">
-                <h2 class="section-title">พยัญชนะไทย (44 ตัว)</h2>
-                <div id="consonants-grid" class="character-grid"></div>
+            <div id="main-menu-screen" class="menu-screen active">
+                <div class="menu-grid">
+                    <div class="menu-card table-card" data-screen="table-menu">
+                        <div class="menu-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="menu-title">ดูตาราง</div>
+                        <div class="menu-subtitle">เรียนรู้ตัวอักษร</div>
+                    </div>
+                    <div class="menu-card game-card" data-screen="game-menu">
+                        <div class="menu-icon">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="menu-title">เล่นเกม</div>
+                        <div class="menu-subtitle">ฝึกทักษะออนไลน์</div>
+                    </div>
+                </div>
             </div>
-            
-            <div id="vowels-tab" class="tab-content">
-                <h2 class="section-title">สระไทย</h2>
-                <div id="vowels-grid" class="character-grid"></div>
+
+            <div id="table-menu-screen" class="menu-screen">
+                <div class="menu-grid">
+                    <div class="menu-card consonant-card" data-action="consonants">
+                        <div class="menu-icon">
+                            <span class="menu-char">ก</span>
+                        </div>
+                        <div class="menu-title">พยัญชนะ</div>
+                        <div class="menu-subtitle">44 ตัว</div>
+                    </div>
+                    <div class="menu-card vowel-card" data-action="vowels">
+                        <div class="menu-icon">
+                            <span class="menu-char">า</span>
+                        </div>
+                        <div class="menu-title">สระ</div>
+                        <div class="menu-subtitle">32 ตัว</div>
+                    </div>
+                    <div class="menu-card final-card" data-action="finals">
+                        <div class="menu-icon">
+                            <span class="menu-char">กก</span>
+                        </div>
+                        <div class="menu-title">ตัวสะกด</div>
+                        <div class="menu-subtitle">8 กลุ่ม</div>
+                    </div>
+                </div>
             </div>
-            
-            <div id="finals-tab" class="tab-content">
-                <h2 class="section-title">ตัวสะกด</h2>
-                <div id="finals-grid" class="finals-grid"></div>
+
+            <div id="game-menu-screen" class="menu-screen">
+                <div class="menu-grid">
+                    <div class="menu-card match-card" data-link="thai_game.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-puzzle-piece"></i>
+                        </div>
+                        <div class="menu-title">เกมจับคู่</div>
+                        <div class="menu-subtitle">จับคู่ภาพกับตัวอักษร</div>
+                    </div>
+                    <div class="menu-card pronunciation-card" data-link="pronunciation.html">
+                        <div class="menu-icon">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+                        <div class="menu-title">ฝึกอ่านออกเสียง</div>
+                        <div class="menu-subtitle">AI ตรวจสอบความถูกต้อง</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="table-view-screen" class="menu-screen">
+                <nav class="tab-nav" id="tab-nav" style="display: none;">
+                    <button class="tab-btn active" data-tab="consonants">
+                        <span class="tab-icon">ก</span>
+                        <span class="tab-name">พยัญชนะไทย</span>
+                    </button>
+                    <button class="tab-btn" data-tab="vowels">
+                        <span class="tab-icon">า</span>
+                        <span class="tab-name">สระ</span>
+                    </button>
+                    <button class="tab-btn" data-tab="finals">
+                        <span class="tab-icon">กก</span>
+                        <span class="tab-name">ตัวสะกด</span>
+                    </button>
+                </nav>
+
+                <div id="consonants-tab" class="tab-content active">
+                    <h2 class="section-title">พยัญชนะไทย (44 ตัว)</h2>
+                    <div id="consonants-grid" class="character-grid"></div>
+                </div>
+
+                <div id="vowels-tab" class="tab-content">
+                    <h2 class="section-title">สระไทย</h2>
+                    <div id="vowels-grid" class="character-grid"></div>
+                </div>
+
+                <div id="finals-tab" class="tab-content">
+                    <h2 class="section-title">ตัวสะกด</h2>
+                    <div id="finals-grid" class="finals-grid"></div>
+                </div>
             </div>
         </main>
     </div>
