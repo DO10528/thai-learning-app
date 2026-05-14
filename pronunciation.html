@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เกมฝึกอ่านออกเสียงไทย</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="pronunciation-app">
+        <header class="game-header">
+            <button class="back-btn" onclick="window.location.href='index.html'">← กลับ</button>
+            <h1 class="game-title">เกมฝึกอ่านออกเสียง</h1>
+            <div class="score-display">
+                <span class="score-label">คะแนนรวม:</span>
+                <span class="score-value" id="total-score">0</span>
+            </div>
+        </header>
+
+        <div id="start-screen" class="screen active">
+            <div class="start-content">
+                <h2 class="welcome-text">มาฝึกอ่านออกเสียงกัน!</h2>
+                <p class="instruction-text">เลือกระดับและหมวดหมู่ที่ต้องการฝึกกันเถอะ!</p>
+                
+                <div class="level-buttons">
+                    <button class="level-btn" data-level="1">
+                        <span class="level-number">ระดับ 1</span>
+                        <span class="level-desc">เรียงลำดับ</span>
+                    </button>
+                    <button class="level-btn" data-level="2">
+                        <span class="level-number">ระดับ 2</span>
+                        <span class="level-desc">สุ่มบางส่วน</span>
+                    </button>
+                    <button class="level-btn" data-level="3">
+                        <span class="level-number">ระดับ 3</span>
+                        <span class="level-desc">สุ่มทั้งหมด</span>
+                    </button>
+                </div>
+
+                <div class="category-buttons">
+                    <button class="category-btn active" data-category="consonants">พยัญชนะ</button>
+                    <button class="category-btn" data-category="vowels">สระ</button>
+                    <button class="category-btn" data-category="finals">ตัวสะกด</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+                <span class="progress-text" id="progress-text">1 / 10</span>
+            </div>
+
+            <div class="pronunciation-question-area">
+                <div class="target-character" id="target-character">ก</div>
+                <div class="target-name" id="target-name">กอ ไก่</div>
+                
+                <div class="visualizer-container" id="visualizer-container">
+                    <div class="visualizer-bar" style="--i: 1;"></div>
+                    <div class="visualizer-bar" style="--i: 2;"></div>
+                    <div class="visualizer-bar" style="--i: 3;"></div>
+                    <div class="visualizer-bar" style="--i: 4;"></div>
+                    <div class="visualizer-bar" style="--i: 5;"></div>
+                    <div class="visualizer-bar" style="--i: 6;"></div>
+                    <div class="visualizer-bar" style="--i: 7;"></div>
+                    <div class="visualizer-bar" style="--i: 8;"></div>
+                </div>
+
+                <div class="score-display" id="current-score-display">
+                    <span class="score-label" id="score-label">กดไมค์เพื่ออ่าน!</span>
+                    <span class="score-value" id="current-score">-</span>
+                </div>
+
+                <button class="mic-btn" id="mic-btn">
+                    <span class="mic-icon">🎤</span>
+                    <span class="mic-text" id="mic-text">กดเพื่ออ่าน</span>
+                </button>
+
+                <div class="feedback-message" id="feedback-message"></div>
+            </div>
+        </div>
+
+        <div id="result-screen" class="screen">
+            <div class="result-content">
+                <h2 class="result-title">เสร็จสิ้น!</h2>
+                <div class="final-score">
+                    <span class="final-score-label">คะแนนรวม:</span>
+                    <span class="final-score-value" id="final-score">0</span>
+                </div>
+                <div class="result-stars" id="result-stars"></div>
+                <div class="result-buttons">
+                    <button class="result-btn" id="play-again-btn">เล่นอีกครั้ง</button>
+                    <button class="result-btn" id="back-to-menu-btn">กลับเมนู</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="confetti-container"></div>
+    </div>
+
+    <script src="js/thai_data.js"></script>
+    <script src="js/audio_manager.js"></script>
+    <script src="js/pronunciation_game.js"></script>
+</body>
+</html>
