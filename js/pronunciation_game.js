@@ -9,6 +9,8 @@ class PronunciationGame {
         this.currentQuestion = null;
         this.recognition = null;
         this.isListening = false;
+        this.recognitionTimeout = null;
+        this.finalTranscript = '';
         this.init();
     }
 
@@ -23,29 +25,85 @@ class PronunciationGame {
             this.recognition = new SpeechRecognition();
             this.recognition.lang = 'th-TH';
             this.recognition.continuous = false;
-            this.recognition.interimResults = false;
+            this.recognition.interimResults = true;
 
             this.recognition.onstart = () => {
                 this.isListening = true;
+                this.finalTranscript = '';
                 this.updateMicButton(true);
+                this.updateStatus('กำลังฟัง...');
                 this.startVisualizer();
+                this.startRecognitionTimeout();
             };
 
             this.recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                const confidence = event.results[0][0].confidence;
-                this.evaluatePronunciation(transcript, confidence);
+                let interimTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        this.finalTranscript += transcript;
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+                this.updateStatus(interimTranscript || this.finalTranscript || 'กำลังฟัง...');
+                
+                if (this.finalTranscript) {
+                    this.evaluatePronunciation(this.finalTranscript, event.results[event.resultIndex][0].confidence);
+                }
             };
 
             this.recognition.onerror = (event) => {
                 console.error('Speech recognition error:', event.error);
+                this.clearRecognitionTimeout();
                 this.stopListening();
-                this.showFeedback('ลองอีกครั้ง!', 'error');
+                
+                let errorMessage = 'ลองอีกครั้ง!';
+                switch(event.error) {
+                    case 'no-speech':
+                        errorMessage = 'ไม่พบเสียง ลองอีกครั้ง!';
+                        break;
+                    case 'network':
+                        errorMessage = 'ปัญหาเครือข่าย ลองอีกครั้ง!';
+                        break;
+                    case 'not-allowed':
+                        errorMessage = 'ไม่อนุญาติใช้ไมโครโฟน!';
+                        break;
+                }
+                this.showFeedback(errorMessage, 'error');
+                this.updateStatus('');
             };
 
             this.recognition.onend = () => {
-                this.stopListening();
+                this.clearRecognitionTimeout();
+                if (this.isListening && !this.finalTranscript) {
+                    this.stopListening();
+                    this.showFeedback('ลองอีกครั้ง!', 'error');
+                    this.updateStatus('');
+                }
             };
+        }
+    }
+
+    startRecognitionTimeout() {
+        this.recognitionTimeout = setTimeout(() => {
+            if (this.recognition && this.isListening) {
+                this.recognition.stop();
+            }
+        }, 4000);
+    }
+
+    clearRecognitionTimeout() {
+        if (this.recognitionTimeout) {
+            clearTimeout(this.recognitionTimeout);
+            this.recognitionTimeout = null;
+        }
+    }
+
+    updateStatus(text) {
+        const scoreLabel = document.getElementById('score-label');
+        if (scoreLabel) {
+            scoreLabel.textContent = text;
         }
     }
 
@@ -230,6 +288,8 @@ class PronunciationGame {
     }
 
     evaluatePronunciation(transcript, confidence) {
+        this.stopListening();
+        
         const score = Math.round(confidence * 100);
         const currentScoreEl = document.getElementById('current-score');
         const scoreLabel = document.getElementById('score-label');
@@ -241,11 +301,13 @@ class PronunciationGame {
             scoreLabel.textContent = 'คะแนน:';
         }
 
-        const targetText = this.currentQuestion.name || this.currentQuestion.character || this.currentQuestion.group || '';
-        const isMatch = this.checkMatch(transcript, targetText);
+        const targetCharacter = this.currentQuestion.character || '';
+        const targetName = this.currentQuestion.name || this.currentQuestion.group || '';
+        const isMatch = this.checkMatch(transcript, targetCharacter, targetName);
 
-        if (score >= 80 || (isMatch && score >= 60)) {
-            this.totalScore += score;
+        if (isMatch || score >= 80) {
+            const finalScore = isMatch ? Math.max(score, 85) : score;
+            this.totalScore += finalScore;
             this.updateTotalScore();
             this.showFeedback('เยี่ยมมาก! ✔', 'success');
             audioManager.playCorrect();
@@ -260,16 +322,34 @@ class PronunciationGame {
         }
     }
 
-    checkMatch(transcript, target) {
+    checkMatch(transcript, targetCharacter, targetName) {
         const cleanTranscript = transcript.toLowerCase().replace(/\s/g, '');
-        const cleanTarget = target.toLowerCase().replace(/\s/g, '');
+        const cleanCharacter = targetCharacter.toLowerCase().replace(/\s/g, '');
+        const cleanName = targetName.toLowerCase().replace(/\s/g, '');
         
-        if (cleanTranscript.includes(cleanTarget) || cleanTarget.includes(cleanTranscript)) {
+        if (cleanCharacter && cleanTranscript.includes(cleanCharacter)) {
+            return true;
+        }
+        
+        if (cleanName && cleanTranscript.includes(cleanName)) {
             return true;
         }
 
-        const similarity = this.calculateSimilarity(cleanTranscript, cleanTarget);
-        return similarity >= 0.8;
+        if (cleanCharacter) {
+            const similarityChar = this.calculateSimilarity(cleanTranscript, cleanCharacter);
+            if (similarityChar >= 0.6) {
+                return true;
+            }
+        }
+
+        if (cleanName) {
+            const similarityName = this.calculateSimilarity(cleanTranscript, cleanName);
+            if (similarityName >= 0.7) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     calculateSimilarity(str1, str2) {
